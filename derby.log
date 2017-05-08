@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Sun May 07 23:26:26 CST 2017:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.13.1.1 - (1765088): instance a816c00e-015b-e685-e48d-000000b55d78 
+on database directory C:\Users\napky\Documents\NetBeansProjects\spark-derby\testDb with class loader sun.misc.Launcher$AppClassLoader@1d16e93 
+Loaded from file:/C:/Users/napky/.m2/repository/org/apache/derby/derby/10.13.1.1/derby-10.13.1.1.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_131-b11
+user.dir=C:\Users\napky\Documents\NetBeansProjects\spark-derby
+os.name=Windows 10
+os.arch=x86
+os.version=10.0
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
