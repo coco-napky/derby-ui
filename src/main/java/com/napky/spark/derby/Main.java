@@ -19,7 +19,7 @@ import java.sql.ResultSetMetaData;
  */
 public class Main {
     
-    private static String dbURL = "jdbc:derby:testDb;create=true;";
+    private static String dbURL = "jdbc:derby:dbs/testDb;create=true;";
     private static String tableName = "restaurants";
     // jdbc Connection
     private static Connection conn = null;
