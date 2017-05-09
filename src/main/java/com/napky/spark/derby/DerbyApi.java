@@ -3,25 +3,45 @@ package com.napky.spark.derby;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLNonTransientConnectionException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Properties;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DerbyApi {
     
     private static Connection conn = null;
+    private final static String baseUrl = "jdbc:derby:dbs/";
+    private static HashMap<UUID, Statement> statements;
     
     public static void init() {
         try {
+            if(statements == null)
+                statements = new HashMap<>();
+            setSystemHome();
             Class.forName("org.apache.derby.jdbc.ClientDriver").newInstance();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    private static void setSystemHome() {
+        String systemDirectory = System.getProperty("user.dir") + "\\dbs";
+        Properties p = System.getProperties();
+        p.setProperty("derby.system.home", systemDirectory);
+        System.out.println("Derby System Home set to: " + systemDirectory);
+    }
     
     public static Result createDb(String name) {
         try {
-            String dbUrl = "jdbc:derby:dbs/" + name + ";create=true";
+            String dbUrl = baseUrl + name + ";create=true;";
             conn = connect(dbUrl, "admin", "admin"); 
             
             String sql = "call SYSCS_UTIL.SYSCS_CREATE_USER('admin', 'admin' )";
@@ -37,10 +57,88 @@ public class DerbyApi {
         }
     }
     
-    public static Result createUser(String user, String password) {
+    public static Result login(String name, String user, String password) {
+        String dbUrl = baseUrl + name + ";deregister=false;";
+        try {
+            conn = connect(dbUrl, user, password);
+        } catch (SQLException ex) {
+            Logger.getLogger(DerbyApi.class.getName()).log(Level.SEVERE, null, ex);
+            return new Result(false, ex.getMessage());
+        }
+        return new Result(true, "Login Success");
+    }
+
+    public static Result logout(String name, String user, String password) {
+        String dbUrl = baseUrl + name + ";shutdown=true;";
         
-            String sql = "call SYSCS_UTIL.SYSCS_CREATE_USER('" 
-                    + user + "', '" + password + "')";
+        try {
+            conn = connect(dbUrl, user, password);
+            return new Result(true, "User logged out");
+        } catch (SQLException ex) {
+            return new Result(true, ex.getMessage());
+        } catch (Exception e) {
+            return new Result(false, "User log out fail");
+        }
+    }
+    
+    private static Connection connect(String dbUrl, String user, String password) throws SQLException {
+        return DriverManager.getConnection(dbUrl, user, password);
+    }
+
+    private static void execute(String sql) throws SQLException, Exception {
+        if(conn == null)
+            throw new Exception("Execution failed, no connection stablished");
+        PreparedStatement statement = conn.prepareCall(sql);
+        statement.execute();
+        statement.close();
+        conn.commit();
+    }
+
+    static Result getUsers() {
+        ArrayList<DerbyUser> users = new ArrayList<>();
+        try {
+            String sql = "select username, HASHINGSCHEME, LASTMODIFIED "
+                    + "from sys.sysusers";
+            
+            UUID index = java.util.UUID.randomUUID();
+            ResultSet result = executeQuery(sql, index);
+            while (result.next()) {
+                String username = result.getString("USERNAME");
+                String hashingScheme = result.getString("HASHINGSCHEME");
+                Timestamp lastModified = result.getTimestamp("LASTMODIFIED");
+                users.add(new DerbyUser(username, hashingScheme, lastModified));
+            }
+            closeStatement(index);
+        } catch (Exception e) {
+            Logger.getLogger(DerbyApi.class.getName()).log(Level.SEVERE, null, e);
+            return new Result(false, e.getMessage());
+        }
+        
+        return new Result(true, "", (Object)users);
+    }
+
+    private static ResultSet executeQuery(String sql, UUID index) throws Exception {
+        if(conn == null)
+            throw new Exception("Execution failed, no connection stablished");
+        Statement statement = conn.createStatement();
+        ResultSet result = statement.executeQuery(sql);
+        statements.put(index, statement);
+        return result;
+    }
+
+    private static Statement getStatement(UUID index) {
+        return statements.get(index);
+    }
+
+    private static void closeStatement(UUID index) throws SQLException {
+        Statement statement = getStatement(index);
+        statement.close();
+        statements.remove(index);
+    }
+
+    public static Result createUser(String user, String password) {
+        String sql = "call SYSCS_UTIL.SYSCS_CREATE_USER('" 
+                + user + "', '" + password + "')";
         try {
             execute(sql);
             return new Result(true, "User created successfully"); 
@@ -50,30 +148,14 @@ public class DerbyApi {
         }
     }
     
-    public static Result LogIn(String name, String user, String password) {
-        String dbUrl = "jdbc:derby:dbs/" + name + ";";
-        conn = connect(dbUrl, user, password);
-        
-        return conn == null ? 
-                new Result(false, "Login Fail") : 
-                new Result(false, "Login Success");
-    }
-    
-    private static Connection connect(String dbUrl, String user, String password) {
-        try
-        {
-            return DriverManager.getConnection(dbUrl, user, password);
+    static Result removeUser(String username) {
+        String sql ="CALL SYSCS_UTIL.SYSCS_DROP_USER('"+ username +"')";
+        try {
+            execute(sql);
+            return new Result(true, "User dropped successfully"); 
+        } catch (Exception ex) {
+            Logger.getLogger(DerbyApi.class.getName()).log(Level.SEVERE, null, ex);
+            return new Result(false, ex.getMessage());
         }
-        catch (Exception except)
-        {
-            except.printStackTrace();
-            return null;
-        }
-    }
-
-    private static void execute(String sql) throws SQLException {
-        PreparedStatement statement = conn.prepareCall(sql);
-        statement.execute();
-        conn.commit();
     }
 }

@@ -1,13 +1,13 @@
 ----------------------------------------------------------------
-Mon May 08 20:54:43 CST 2017:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.13.1.1 - (1765088): instance a816c00e-015b-eb21-5a04-000005e484c8 
-on database directory C:\Users\napky\Documents\NetBeansProjects\derby-ui\dbs\napkys with class loader sun.misc.Launcher$AppClassLoader@73d16e93 
+Mon May 08 22:15:07 CST 2017:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.13.1.1 - (1765088): instance a816c00e-015b-eb6a-f63e-0000009516d8 
+on database directory C:\Users\napky\Documents\NetBeansProjects\spark-derby\dbs\late with class loader sun.misc.Launcher$AppClassLoader@1d16e93 
 Loaded from file:/C:/Users/napky/.m2/repository/org/apache/derby/derby/10.13.1.1/derby-10.13.1.1.jar
 java.vendor=Oracle Corporation
-java.runtime.version=1.8.0_121-b13
-user.dir=C:\Users\napky\Documents\NetBeansProjects\derby-ui
+java.runtime.version=1.8.0_131-b11
+user.dir=C:\Users\napky\Documents\NetBeansProjects\spark-derby
 os.name=Windows 10
-os.arch=amd64
+os.arch=x86
 os.version=10.0
 derby.system.home=null
 Database Class Loader started - derby.database.classpath=''
