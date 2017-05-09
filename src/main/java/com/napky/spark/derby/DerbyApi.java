@@ -158,4 +158,16 @@ public class DerbyApi {
             return new Result(false, ex.getMessage());
         }
     }
+
+    static Object updatePassword(String username, String password) {
+        String sql = "CALL SYSCS_UTIL.SYSCS_RESET_PASSWORD('" 
+                + username + "', '" + password + "')";
+        try {
+            execute(sql);
+            return new Result(true, "User updated successfully"); 
+        } catch (Exception ex) {
+            Logger.getLogger(DerbyApi.class.getName()).log(Level.SEVERE, null, ex);
+            return new Result(false, ex.getMessage());
+        }
+    }
 }

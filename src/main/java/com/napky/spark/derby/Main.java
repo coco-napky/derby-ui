@@ -74,6 +74,20 @@ public class Main {
             
             return gson.toJson(DerbyApi.createUser(username, password));
         });
+
+        get("/update-password", "application/json", (req, res) -> {
+            
+            String username = req.queryParams("user");
+            String password = req.queryParams("password");
+            
+            if(username == null)
+                return "Username cannot be null";
+            
+            if(password == null)
+                return "Password cannot be null";
+            
+            return gson.toJson(DerbyApi.updatePassword(username, password));
+        });
         
         get("/remove-user", "application/json", (req, res) -> {
             String username = req.queryParams("user");
