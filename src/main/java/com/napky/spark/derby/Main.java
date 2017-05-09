@@ -5,44 +5,58 @@
  */
 package com.napky.spark.derby;
 
+import com.google.gson.Gson;
 import static spark.Spark.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.ResultSetMetaData;
-
 /**
  *
  * @author napky
  */
 public class Main {
-    
-    private static String dbURL = "jdbc:derby:dbs/testDb;create=true;";
-    private static String tableName = "restaurants";
-    // jdbc Connection
-    private static Connection conn = null;
-    private static Statement stmt = null;
-    
+    public static Gson gson;
     public static void main(String[] args) {
+        
+        gson = new Gson();
+        DerbyApi.init();
         port(8000);
-        createConnection();
-        get("/hello", (req, res) -> "Hello World 2");
-    }
-    
-    
-    private static void createConnection() {
-        try
-        {
-            Class.forName("org.apache.derby.jdbc.ClientDriver").newInstance();
-            //Get a connection
-            conn = DriverManager.getConnection(dbURL); 
-        }
-        catch (Exception except)
-        {
-            System.out.println("Failed");
-            except.printStackTrace();
-        }
+        
+        get("/create-database", "application/json", (req, res) -> {
+            String name = req.queryParams("name");
+            
+            if(name == null)
+                return "Database name cannot be null";
+            return gson.toJson(DerbyApi.createDb(name));
+        });
+        
+        get("/login", "application/json", (req, res) -> {
+            String name = req.queryParams("name");
+            String username = req.queryParams("user");
+            String password = req.queryParams("password");
+            
+            if(name == null)
+                return "Database name cannot be null";
+            
+            if(username == null)
+                return "Username cannot be null";
+            
+            if(password == null)
+                return "Password cannot be null";
+            
+            return gson.toJson(DerbyApi.LogIn(name, username, password));
+        });
+        
+        get("/create-user", "application/json", (req, res) -> {
+            
+            String username = req.queryParams("user");
+            String password = req.queryParams("password");
+            
+            if(username == null)
+                return "Username cannot be null";
+            
+            if(password == null)
+                return "Password cannot be null";
+            
+            return gson.toJson(DerbyApi.createUser(username, password));
+        });
+        
     }
 }
