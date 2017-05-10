@@ -1,5 +1,8 @@
 package com.napky.spark.derby;
 
+import com.napky.spark.derby.types.DerbyColumn;
+import com.napky.spark.derby.types.DerbyTable;
+import com.napky.spark.derby.types.DerbyUser
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -159,7 +162,7 @@ public class DerbyApi {
         }
     }
 
-    static Object updatePassword(String username, String password) {
+    static Result updatePassword(String username, String password) {
         String sql = "CALL SYSCS_UTIL.SYSCS_RESET_PASSWORD('" 
                 + username + "', '" + password + "')";
         try {
@@ -169,5 +172,46 @@ public class DerbyApi {
             Logger.getLogger(DerbyApi.class.getName()).log(Level.SEVERE, null, ex);
             return new Result(false, ex.getMessage());
         }
+    }
+
+    static Result getTables(String schema) {
+        String sql = "select * from sys.systables t "
+                + "join sys.syscolumns c on t.tableid = c.referenceid "
+                + "join sys.sysschemas s on s.schemaid = t.schemaid ";
+        
+        HashMap<String,DerbyTable> tables = new HashMap<String, DerbyTable>();
+        
+        UUID index = java.util.UUID.randomUUID();
+        try {
+            ResultSet result = executeQuery(sql, index);
+            while (result.next()) {
+                String schemaId = result.getString("SCHEMAID");
+                String schemaName = result.getString("SCHEMANAME");
+                String tableId = result.getString("TABLEID");
+                String tableName = result.getString("TABLENAME");
+                String columnName = result.getString("COLUMNNAME");
+                String columnDataType = result.getString("COLUMNDATATYPE");
+                
+                String identifier = schemaName + "." + tableName;
+                
+                if(tables.containsKey(identifier)) {
+                    DerbyTable table = tables.get(identifier);
+                    table.addColumn(new DerbyColumn(columnName, columnDataType));
+                } else {
+                    DerbyTable table = new DerbyTable(identifier, schemaId, tableId);
+                    tables.put(identifier, table);
+                }
+                
+                System.out.println(columnName);
+            }
+            closeStatement(index);
+        } catch (Exception e) {
+            Logger.getLogger(DerbyApi.class.getName()).log(Level.SEVERE, null, e);
+            return new Result(false, e.getMessage());
+        }
+        
+        return new Result(true, "", (Object)tables);
+        
+        
     }
 }

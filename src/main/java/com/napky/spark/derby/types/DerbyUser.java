@@ -1,14 +1,13 @@
 
-package com.napky.spark.derby;
-
+package com.napky.spark.derby.types;
 import java.sql.Timestamp;
 
-class DerbyUser {
+public class DerbyUser {
     public String username;
     public Timestamp lastModified;
     public String hashingScheme;
 
-    DerbyUser(String username, String hashingScheme, Timestamp lastModified) {
+    public DerbyUser(String username, String hashingScheme, Timestamp lastModified) {
         this.username = username;
         this.hashingScheme = hashingScheme;
         this.lastModified = lastModified;

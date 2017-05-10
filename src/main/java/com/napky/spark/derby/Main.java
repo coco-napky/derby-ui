@@ -98,6 +98,12 @@ public class Main {
             return gson.toJson(DerbyApi.removeUser(username));
         });
         
+        get("/get-tables", "application/json", (req, res) -> {
+            String schema = req.queryParams("schema");
+            
+            return gson.toJson(DerbyApi.getTables(schema));
+        });
+        
         get("/get-users", "application/json", (req, res) -> gson.toJson(DerbyApi.getUsers()));
         
     }
