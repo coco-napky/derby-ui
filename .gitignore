@@ -6,3 +6,4 @@ nbdist/
 .nb-gradle/
 dbs/
 ./derby.log
+/front-end/node_modules
