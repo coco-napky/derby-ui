@@ -1,8 +1,9 @@
-let store = require('store');
+import http from './http';
+import CONSTANTS from '../constants'; 
 
 let service = {};
 
-service.getSession = () => store.get('session');
-service.setSession = data => store.get('session', data);
+service.login = (database, user, password) => 
+    http.get(`${CONSTANTS.API_URL}/login?name=${database}&user=${user}&password=${password}`)
 
 export default service;

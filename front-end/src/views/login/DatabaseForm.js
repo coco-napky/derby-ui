@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Alert, Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import { Alert, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import DatabaseService from '../../services/database';
 
 class DatabaseForm extends Component {
@@ -42,8 +42,8 @@ class DatabaseForm extends Component {
                 <FormGroup>
                     <Label for="database">Database List</Label>
                     <Input type="select" name="select" id="database">
-                        {this.state.databases.map(database => (
-                            <option>{database}</option>
+                        {this.state.databases.map((database, index) => (
+                            <option key={index}>{database}</option>
                         ))}
                     </Input>
                 </FormGroup>                
