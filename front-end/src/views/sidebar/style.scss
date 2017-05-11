@@ -1,0 +1,19 @@
+$red: #d9534f;
+$white: #f9f9f9;
+$teal: #5bc0de;
+$green:#5cb85c;
+$blue:#428bca;
+
+.sidebar-wrapper {
+    width: 10rem;
+    padding-left: 2rem;
+    background-color: black;
+    
+    h5 {
+        color: white;
+    }
+    a {
+        padding: 0;
+        color: white;
+    }
+}

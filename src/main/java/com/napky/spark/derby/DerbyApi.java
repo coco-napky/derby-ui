@@ -2,7 +2,9 @@ package com.napky.spark.derby;
 
 import com.napky.spark.derby.types.DerbyColumn;
 import com.napky.spark.derby.types.DerbyTable;
-import com.napky.spark.derby.types.DerbyUser
+import com.napky.spark.derby.types.DerbyUser;
+import java.io.File;
+import java.io.FilenameFilter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -21,7 +23,7 @@ import java.util.logging.Logger;
 public class DerbyApi {
     
     private static Connection conn = null;
-    private final static String baseUrl = "jdbc:derby:dbs/";
+    private final static String baseUrl = "jdbc:derby:";
     private static HashMap<UUID, Statement> statements;
     
     public static void init() {
@@ -213,5 +215,17 @@ public class DerbyApi {
         return new Result(true, "", (Object)tables);
         
         
+    }
+
+    static Result getDatabases() {
+        String systemDirectory = System.getProperty("user.dir") + "\\dbs";
+        File file = new File(systemDirectory);
+        String[] directories = file.list(new FilenameFilter() {
+          @Override
+          public boolean accept(File current, String name) {
+            return new File(current, name).isDirectory();
+          }
+        });
+        return new Result(true, "", directories);
     }
 }

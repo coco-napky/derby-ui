@@ -19,6 +19,12 @@ public class Main {
         DerbyApi.init();
         port(8000);
         
+        CorsFilter.apply();
+        
+        get("/get-databases", "application/json", (req, res) -> {
+            return gson.toJson(DerbyApi.getDatabases());
+        });
+        
         get("/create-database", "application/json", (req, res) -> {
             String name = req.queryParams("name");
             
