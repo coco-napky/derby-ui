@@ -13,27 +13,27 @@ class Routes extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {loggedIn: false};
+    let session = SessionService.getSession();
+    this.state = {loggedIn: session.loggedIn};
     EventService.on('login', () => this.setState({...this.state, loggedIn: true}));
     EventService.on('logout', () => this.setState({...this.state, loggedIn: false}));
   }
 
   render() {
-    let session = SessionService.getSession();
     
-    let Content = ()  => !this.state.loggedIn ? (<Login/>) : (
-      <BrowserRouter {...this.props}>
-        <div className="h-100 d-flex justify-content-space">
-          <Route path="/" component={Sidebar} />
-          <Route path="/" component={Home} />
-        </div>
-      </BrowserRouter>
-    );
+      let Content = ()  => !this.state.loggedIn ? (<Login/>) : (
+        <BrowserRouter {...this.props}>
+          <div className="h-100 d-flex justify-content-space">
+            <Route path="/" component={Sidebar} />
+            <Route path="/" component={Home} />
+          </div>
+        </BrowserRouter>
+      );
     
-    return (
-      <Content className="h-100"/>
-    );
-  }
+      return (
+        <Content className="h-100"/>
+      );
+    }
   }
 
 export default Routes;

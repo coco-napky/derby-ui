@@ -24,7 +24,7 @@ class LoginForm extends Component {
         UserService.login(database,user,password)
         .then(response => {
             if(response.data.status) {
-                SessionService.setSession({user,password,database});
+                SessionService.setSession({user,password,database, loggedIn: true});
                 EventService.emit("login");   
             }
         })

@@ -5,10 +5,11 @@ $green:#5cb85c;
 $blue:#428bca;
 
 .sidebar-wrapper {
-    width: 10rem;
+    min-width: 17rem;
+    padding-right: 3rem;
     padding-left: 2rem;
     background-color: black;
-    
+
     h5 {
         padding-top: 1rem;
         color: white;
