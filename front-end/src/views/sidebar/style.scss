@@ -10,10 +10,18 @@ $blue:#428bca;
     background-color: black;
     
     h5 {
+        padding-top: 1rem;
         color: white;
+        font-weight: bold;
     }
     a {
         padding: 0;
         color: white;
+    }
+    .nav-link {
+        font-weight: bold;
+    }
+    .collapse, .collapsing {
+        padding-left: 1rem;
     }
 }

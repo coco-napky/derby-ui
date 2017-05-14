@@ -3,10 +3,7 @@ let store = require('store');
 let service = {};
 
 service.getSession = () => store.get('session');
-service.setSession = data => {
-    console.log('setting data')
-    store.set('session', data)
-    console.log(store.get('session'))
-};
+service.setSession = data => store.set('session', data);
+service.clear = data => store.clearAll();
 
 export default service;

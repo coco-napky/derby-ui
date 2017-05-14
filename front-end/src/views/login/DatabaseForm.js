@@ -4,10 +4,10 @@ import DatabaseService from '../../services/database';
 
 class DatabaseForm extends Component {
     constructor(props) {
+
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.state = {databases: [], error: false, response: false, message: ''}
-
         DatabaseService.getDatabases()
         .then(response => this.setState({...this.state, databases: response.data.data}))
     }

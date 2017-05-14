@@ -3,13 +3,14 @@ import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import DatabaseService from '../../services/database';
 import UserService from '../../services/user';
 import SessionService from '../../services/session';
-console.log(SessionService)
+import EventService from '../../services/events';
+
 class LoginForm extends Component {
     constructor(props) {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.state = {databases: [], error: false, response: false, message: ''}
-
+        
         DatabaseService.getDatabases()
         .then(response => {
             this.setState({...this.state, databases: response.data.data});
@@ -24,8 +25,7 @@ class LoginForm extends Component {
         .then(response => {
             if(response.data.status) {
                 SessionService.setSession({user,password,database});
-                this.forceUpdate();
-                console.log('success')
+                EventService.emit("login");   
             }
         })
     }
