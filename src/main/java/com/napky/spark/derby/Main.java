@@ -6,6 +6,7 @@
 package com.napky.spark.derby;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import static spark.Spark.*;
 /**
  *
@@ -108,6 +109,15 @@ public class Main {
             String schema = req.queryParams("schema");
             
             return gson.toJson(DerbyApi.getTables(schema));
+        });
+        
+        post("/query-table", "application/json", (req, res) -> {
+            
+            String body = req.body();
+            System.out.println(body);
+            TableQuery query = gson.fromJson(body, TableQuery.class);
+            
+            return gson.toJson(DerbyApi.queryTable(query));
         });
         
         get("/get-users", "application/json", (req, res) -> gson.toJson(DerbyApi.getUsers()));

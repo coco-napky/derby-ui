@@ -19,6 +19,8 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class DerbyApi {
     
@@ -211,10 +213,7 @@ public class DerbyApi {
             Logger.getLogger(DerbyApi.class.getName()).log(Level.SEVERE, null, e);
             return new Result(false, e.getMessage());
         }
-        
-        return new Result(true, "", (Object)tables);
-        
-        
+        return new Result(true, "", (Object)tables);  
     }
 
     static Result getDatabases() {
@@ -228,4 +227,41 @@ public class DerbyApi {
         });
         return new Result(true, "", directories);
     }
+
+    static Result queryTable(TableQuery query) {
+        String sql = "select " + delimit(query.columns) 
+                + " from " + query.schema + "." + 
+                query.tableName;
+        
+        ResultSet resultSet;
+        JSONArray json;
+        ArrayList<HashMap<String, String>> data = new ArrayList<>();
+        
+        UUID index = java.util.UUID.randomUUID();
+        try {
+            resultSet = executeQuery(sql, index);
+            json = ResultSetSerializer.convertResultSetIntoJSON(resultSet);
+            System.out.println(json.toString());
+            closeStatement(index);
+        } catch (Exception e) {
+            Logger.getLogger(DerbyApi.class.getName()).log(Level.SEVERE, null, e);
+            return new Result(false, e.getMessage());
+        }
+        return new Result(true, "", json);
+    }
+
+    private static String delimit(ArrayList<String> columns) {
+        String delimitted = "";
+        if(columns == null || columns.size() == 0)
+           return "*";
+        
+        for(int i = 0; i < columns.size(); ++i) {
+            delimitted += columns.get(i);
+            
+            if(i != columns.size() - 1)
+                delimitted += ",";
+        }
+        return delimitted;
+    }
+
 }
