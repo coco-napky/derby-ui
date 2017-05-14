@@ -5,6 +5,8 @@ import { Collapse } from 'reactstrap';
 import QueryService from '../../services/query';
 import SessionService from '../../services/session';
 import EventService from '../../services/events';
+import { browserHistory } from 'react-router';
+
 import './style.scss';
 
 const getSchemas = data => {
@@ -35,7 +37,7 @@ const mapTables = schema => schema.tables.map((table, index) => (
 
 const mapSchemas = (scope, schemas) => schemas.map((schema, index) => (
     <NavItem key={index}>
-        <NavLink href="#" onClick={() => scope.toggle(schema.schemaName)}>{schema.schemaName}</NavLink>
+        <NavLink href="#" onClick={() => scope.toggle(schema.schemaName, `/schema/${schema.schemaName}`)}>{schema.schemaName}</NavLink>
         <Collapse isOpen={scope.state[schema.schemaName]}>
             {mapTables(schema)}
         </Collapse>
@@ -64,12 +66,15 @@ class Sidebar extends Component {
         this.setState({...this.state, schemas})
     }
 
-    toggle(prop) {
+    toggle(prop, url) {
         
         let state = this.state;
         console.log("state[prop] ", state[prop], prop);
         state[prop] = !state[prop];
         this.setState({...this.state});
+
+        if(url)
+            this.props.history.push(url)
     }
     
     logout() {

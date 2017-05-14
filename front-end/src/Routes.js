@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Sidebar from './views/sidebar';
 import Home from './views/home';
 import Login from './views/login';
+import SchemaDetails from './views/schema';
 import { BrowserRouter, Route } from 'react-router-dom'
 import SessionService from './services/session';
 import EventService from './services/events';
@@ -14,18 +15,18 @@ class Routes extends Component {
   constructor(props) {
     super(props);
     let session = SessionService.getSession();
-    this.state = {loggedIn: session.loggedIn};
+    this.state = session ? {loggedIn: session.loggedIn} : {loggedIn: false};
     EventService.on('login', () => this.setState({...this.state, loggedIn: true}));
     EventService.on('logout', () => this.setState({...this.state, loggedIn: false}));
   }
-
+  
   render() {
     
       let Content = ()  => !this.state.loggedIn ? (<Login/>) : (
         <BrowserRouter {...this.props}>
           <div className="h-100 d-flex justify-content-space">
-            <Route path="/" component={Sidebar} />
-            <Route path="/" component={Home} />
+            <Route path="*" component={Sidebar} />
+            <Route path="/schema/:schemaName" component={SchemaDetails} />
           </div>
         </BrowserRouter>
       );
