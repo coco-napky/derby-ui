@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import QueryService from '../../services/query';
-import { Card, CardBlock, CardTitle, CardSubtitle, ListGroup, ListGroupItem  } from 'reactstrap';
+import { Card, CardBlock, CardTitle, ListGroup, ListGroupItem  } from 'reactstrap';
 import "./style.scss";
 
 class SchemaDetails extends Component {

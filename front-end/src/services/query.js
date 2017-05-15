@@ -22,5 +22,6 @@ service.queryTable = (schema, tableName, where, compare) => {
 service.getTriggers = () => service.queryTable('sys', 'systriggers');
 service.getStatements = () => service.queryTable('sys', 'sysstatements'); 
 service.getIndexes = () => service.queryTable('sys', 'SYSCONGLOMERATES', 'isindex', true); 
+service.getUsers = () => http.get(`${CONSTANTS.API_URL}/get-users`);
 
 export default service;

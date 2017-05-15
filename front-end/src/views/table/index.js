@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import QueryService from '../../services/query';
-import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Table } from 'reactstrap';
+import { TabContent, TabPane, Nav, NavItem, NavLink, Card} from 'reactstrap';
 import classnames from 'classnames';
 import Details from './details';
 import TableData from './data';
@@ -24,8 +24,6 @@ class TableView extends Component {
     }
 
     loadData() {
-        let {schemaName} = this.props.match.params;        
-        
         const search = this.props.location.search;
         const params = new URLSearchParams(search);
         const name = params.get('name');
@@ -42,7 +40,7 @@ class TableView extends Component {
             let tableData = response.data.data.myArrayList.map(t => t.map);
             this.setState({...this.state, tableData});
         })
-        .catch(error => console.error(error))
+        .catch(error => console.log(error))
     }
 
     componentWillReceiveProps() {
@@ -61,32 +59,32 @@ class TableView extends Component {
     render() {
         return (
             <div className="w-100 d-flex justify-content-center vw-table">
-            <Card className="main-card">
-                <Nav tabs>
-                    <NavItem>
-                        <NavLink
-                        className={classnames({ active: this.state.activeTab === '1' })}
-                        onClick={() => { this.toggle('1'); }}>
-                            Details
-                        </NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink
-                        className={classnames({ active: this.state.activeTab === '2' })}
-                        onClick={() => { this.toggle('2'); }}>
-                            Rows
-                        </NavLink>
-                    </NavItem>
-                </Nav>
-                <TabContent activeTab={this.state.activeTab} className="pt-2">
-                    <TabPane tabId="1">
-                        <Details data={{...this.state.tableDetails}}/>
-                    </TabPane>
-                    <TabPane tabId="2">
-                        <TableData columns={this.state.tableDetails.columns} rows={this.state.tableData}/>
-                    </TabPane>
-                </TabContent>
-            </Card>
+                <Card className="main-card">
+                    <Nav tabs>
+                        <NavItem>
+                            <NavLink
+                            className={classnames({ active: this.state.activeTab === '1' })}
+                            onClick={() => { this.toggle('1'); }}>
+                                Details
+                            </NavLink>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink
+                            className={classnames({ active: this.state.activeTab === '2' })}
+                            onClick={() => { this.toggle('2'); }}>
+                                Rows
+                            </NavLink>
+                        </NavItem>
+                    </Nav>
+                    <TabContent activeTab={this.state.activeTab} className="pt-2">
+                        <TabPane tabId="1">
+                            <Details data={{...this.state.tableDetails}}/>
+                        </TabPane>
+                        <TabPane tabId="2">
+                            <TableData columns={this.state.tableDetails.columns} rows={this.state.tableData}/>
+                        </TabPane>
+                    </TabContent>
+                </Card>
             </div>
         );
     }

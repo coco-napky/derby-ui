@@ -3,11 +3,10 @@ import Sidebar from './views/sidebar';
 import Login from './views/login';
 import SchemaDetails from './views/schema';
 import TableView from './views/table';
+import Users from './views/users';
 import { BrowserRouter, Route } from 'react-router-dom'
 import SessionService from './services/session';
 import EventService from './services/events';
-
-let loggedIn = false;
 
 class Routes extends Component {
   state = {  }
@@ -28,6 +27,7 @@ class Routes extends Component {
             <Route path="*" component={Sidebar} />
             <Route path="/schema/:schemaName" component={SchemaDetails} />
             <Route path="/table/" component={TableView} />
+            <Route path="/users/" component={Users} />
           </div>
         </BrowserRouter>
       );

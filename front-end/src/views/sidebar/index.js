@@ -1,18 +1,16 @@
 import React, {Component} from 'react';
 import { Nav, NavItem, NavLink } from 'reactstrap';
-import {Link} from 'react-router-dom';
-import { Collapse } from 'reactstrap';
 import QueryService from '../../services/query';
 import SessionService from '../../services/session';
 import EventService from '../../services/events';
-import { browserHistory } from 'react-router';
-
+import mapSchemas from './mapSchema';
+import {Link} from 'react-router-dom';
 import './style.scss';
 
 const getSchemaId = (schemaName, data) => {
     let props = Object.keys(data);
     for(let prop of props)
-        if(data[prop].schemaName == schemaName)
+        if(data[prop].schemaName === schemaName)
             return data[prop].schemaId;
     return null;
 }
@@ -28,7 +26,7 @@ const getSchemas = data => {
     for(let schemaName of set) {
         let schema = [];
         for(let prop of props)
-            if(data[prop].schemaName == schemaName)
+            if(data[prop].schemaName === schemaName)
                 schema.push(data[prop])
 
         schemas.push({
@@ -41,45 +39,6 @@ const getSchemas = data => {
     return schemas;
 } 
 
-const mapTables = schema => schema.tables.map((table, index) => (
-    <Link key={index} className="d-block" to={`/table?schema=${table.schemaName}&name=${table.identifier}`}>{`${table.identifier}`}</Link>
-));
-
-const mapStatements = schema => schema.statements ? schema.statements.map((statement, index) => (
-    <Link key={index} className="d-block" 
-        to={`/statement?schema=${statement.schemaid}&name=${statement.stmtname}`}>
-        {`${statement.stmtname}`}
-    </Link>
-)) : '';
-
-const mapIndexes = schema => schema.indexes ? schema.indexes.map((index, i) => (
-    <Link key={i} className="d-block" 
-        to={`/index?schema=${index.schemaid}&name=${index.conglomeratename}`}>
-        {`${index.conglomeratename}`}
-    </Link>
-)) : '';
-
-
-const mapSchemas = (scope, schemas) => schemas.map((schema, index) => (
-    <NavItem key={index}>
-        <NavLink href="#" onClick={() => scope.toggle(schema.schemaName, `/schema/${schema.schemaName}`)}>{schema.schemaName}</NavLink>
-        <Collapse isOpen={scope.state[schema.schemaName]}>
-            <NavLink href="#" onClick={() => scope.toggle(`${schema.schemaName}-tables`)}>Tables</NavLink>
-            <Collapse isOpen={scope.state[`${schema.schemaName}-tables`]}>
-                {mapTables(schema)}
-            </Collapse>
-            <NavLink href="#" onClick={() => scope.toggle(`${schema.schemaName}-statements`)}>Statements</NavLink>
-            <Collapse isOpen={scope.state[`${schema.schemaName}-statements`]}>
-                {mapStatements(schema)}
-            </Collapse>
-            <NavLink href="#" onClick={() => scope.toggle(`${schema.schemaName}-indexes`)}>Indexes</NavLink>
-            <Collapse isOpen={scope.state[`${schema.schemaName}-indexes`]}>
-                {mapIndexes(schema)}
-            </Collapse>
-        </Collapse>
-    </NavItem>
-));
-
 class Sidebar extends Component {
     state = {  }
 
@@ -87,8 +46,8 @@ class Sidebar extends Component {
         super(props);
         this.toggle = this.toggle.bind(this);
         this.logout = this.logout.bind(this);
-        
-        this.state = { collapse: false, schemas: []};
+        this.username = SessionService.getSession().user;
+        this.state = { collapse: false, schemas: [], users: []};
 
          QueryService.getTables()
         .then(response => {
@@ -102,8 +61,16 @@ class Sidebar extends Component {
         })
         .then(response => {
             this.loadToSchema(response.data.data, 'indexes');
+            return QueryService.getUsers();
+        })
+        .then(response => {
+            this.loadUsers(response.data.data);
         })
         
+    }
+
+    loadUsers(data) {
+        this.setState({...this.state, users: data});
     }
 
     loadToSchema(data, prop) {
@@ -111,7 +78,7 @@ class Sidebar extends Component {
          for(let schema of this.state.schemas) {
             schema[prop] = [];
             for(let item of items)
-                if(schema.schemaId == item.schemaid) 
+                if(schema.schemaId === item.schemaid) 
                     schema[prop].push(item);
         }
     }
@@ -140,8 +107,12 @@ class Sidebar extends Component {
         return (
             <div className="sidebar-wrapper white">
                 <h5 className="">Derby UI</h5>
+                <h5 className="mb-2 p-0">{this.username}</h5>
                 <Nav vertical className="flex-column justify-content-center">
                     {mapSchemas(this, this.state.schemas)}
+                    <NavItem>
+                        <Link to="/users" >Users</Link>
+                    </NavItem>
                     <NavItem>
                         <NavLink href="#" onClick={() => this.logout()}>Logout</NavLink>
                     </NavItem>

@@ -6,21 +6,14 @@ const mapRow = (i,columns, row) =>{
     <tr key={i}>
         <th key={i}>{i} </th>
         {columns.map((c,i) => (
-            <td>{`${row[c.columnName.toLowerCase()]}`}</td>
+            <td key={i}>{`${row[c.columnName.toLowerCase()]}`}</td>
         ))}
     </tr>
 );
 } 
 
 class TableData extends Component {
-    
-    constructor(props) {
-        super(props);
-        this.props = {...this.props,columns: [], rows: []}
-    }
-    
     render() {
-        console.log(this.props)
         return (
             <Table>
                 <thead>
