@@ -5,10 +5,11 @@ $green:#5cb85c;
 $blue:#428bca;
 
 .sidebar-wrapper {
-    min-width: 17rem;
+    min-width: 20rem;
     padding-right: 3rem;
     padding-left: 2rem;
     background-color: black;
+    overflow-y: scroll;
 
     h5 {
         padding-top: 1rem;

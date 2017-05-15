@@ -14,8 +14,6 @@ const getSchemaId = (schemaName, data) => {
     for(let prop of props)
         if(data[prop].schemaName == schemaName)
             return data[prop].schemaId;
-        else 
-            console.log("data[prop].schemaName == schemaName ", data[prop], schemaName);
     return null;
 }
 
@@ -47,11 +45,37 @@ const mapTables = schema => schema.tables.map((table, index) => (
     <Link key={index} className="d-block" to={`/table?schema=${table.schemaName}&name=${table.identifier}`}>{`${table.identifier}`}</Link>
 ));
 
+const mapStatements = schema => schema.statements ? schema.statements.map((statement, index) => (
+    <Link key={index} className="d-block" 
+        to={`/statement?schema=${statement.schemaid}&name=${statement.stmtname}`}>
+        {`${statement.stmtname}`}
+    </Link>
+)) : '';
+
+const mapIndexes = schema => schema.indexes ? schema.indexes.map((index, i) => (
+    <Link key={i} className="d-block" 
+        to={`/index?schema=${index.schemaid}&name=${index.conglomeratename}`}>
+        {`${index.conglomeratename}`}
+    </Link>
+)) : '';
+
+
 const mapSchemas = (scope, schemas) => schemas.map((schema, index) => (
     <NavItem key={index}>
         <NavLink href="#" onClick={() => scope.toggle(schema.schemaName, `/schema/${schema.schemaName}`)}>{schema.schemaName}</NavLink>
         <Collapse isOpen={scope.state[schema.schemaName]}>
-            {mapTables(schema)}
+            <NavLink href="#" onClick={() => scope.toggle(`${schema.schemaName}-tables`)}>Tables</NavLink>
+            <Collapse isOpen={scope.state[`${schema.schemaName}-tables`]}>
+                {mapTables(schema)}
+            </Collapse>
+            <NavLink href="#" onClick={() => scope.toggle(`${schema.schemaName}-statements`)}>Statements</NavLink>
+            <Collapse isOpen={scope.state[`${schema.schemaName}-statements`]}>
+                {mapStatements(schema)}
+            </Collapse>
+            <NavLink href="#" onClick={() => scope.toggle(`${schema.schemaName}-indexes`)}>Indexes</NavLink>
+            <Collapse isOpen={scope.state[`${schema.schemaName}-indexes`]}>
+                {mapIndexes(schema)}
+            </Collapse>
         </Collapse>
     </NavItem>
 ));
@@ -64,7 +88,7 @@ class Sidebar extends Component {
         this.toggle = this.toggle.bind(this);
         this.logout = this.logout.bind(this);
         
-        this.state = { collapse: false, schemas: [] };
+        this.state = { collapse: false, schemas: []};
 
          QueryService.getTables()
         .then(response => {
@@ -73,23 +97,23 @@ class Sidebar extends Component {
             return QueryService.getStatements();
         })
         .then(response => {
-            this.loadStatements(response.data.data)
+            this.loadToSchema(response.data.data, 'statements')
+            return QueryService.getIndexes();
+        })
+        .then(response => {
+            this.loadToSchema(response.data.data, 'indexes');
         })
         
     }
 
-    loadStatements(data) {
-        let statements = data.myArrayList.map(s => s.map);
-        for(let schema of this.state.schemas) {
-            schema.statements = [];
-            for(let statement of statements)
-                if(schema.schemaId == statement.schemaid) 
-                    schema.statements.push(statement);
-                else
-                    console.log("schema.schemaId ", schema.schemaId, statement.schemaid);
+    loadToSchema(data, prop) {
+        let items = data.myArrayList.map(i => i.map);
+         for(let schema of this.state.schemas) {
+            schema[prop] = [];
+            for(let item of items)
+                if(schema.schemaId == item.schemaid) 
+                    schema[prop].push(item);
         }
-        console.log(this.state.schemas);
-
     }
 
     loadTables(data) {
@@ -100,7 +124,6 @@ class Sidebar extends Component {
     toggle(prop, url) {
         
         let state = this.state;
-        console.log("state[prop] ", state[prop], prop);
         state[prop] = !state[prop];
         this.setState({...this.state});
 

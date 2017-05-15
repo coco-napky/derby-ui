@@ -178,10 +178,13 @@ public class DerbyApi {
         }
     }
 
-    static Result getTables(String schema) {
+    static Result getTables(String schema, String where, String compare) {
         String sql = "select * from sys.systables t "
                 + "join sys.syscolumns c on t.tableid = c.referenceid "
                 + "join sys.sysschemas s on s.schemaid = t.schemaid ";
+        
+        if(where != null)
+            sql += "where t." + where + " = " + "'" + compare + "'";
         
         HashMap<String,DerbyTable> tables = new HashMap<String, DerbyTable>();
         
@@ -236,6 +239,7 @@ public class DerbyApi {
         if(query.where != null)
             sql += " where " + query.where + " = " + query.compare;
         
+        System.out.println(sql);
         ResultSet resultSet;
         JSONArray json;
         ArrayList<HashMap<String, String>> data = new ArrayList<>();

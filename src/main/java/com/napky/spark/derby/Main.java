@@ -107,8 +107,10 @@ public class Main {
         
         get("/get-tables", "application/json", (req, res) -> {
             String schema = req.queryParams("schema");
+            String where = req.queryParams("where");
+            String compare = req.queryParams("compare");
             
-            return gson.toJson(DerbyApi.getTables(schema));
+            return gson.toJson(DerbyApi.getTables(schema, where, compare));
         });
         
         get("/query-table", "application/json", (req, res) -> {

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import QueryService from '../../services/query';
-import { Card, CardBlock, CardTitle, CardSubtitle } from 'reactstrap';
+import { Card, CardBlock, CardTitle, CardSubtitle, ListGroup, ListGroupItem  } from 'reactstrap';
 import "./style.scss";
 
 class SchemaDetails extends Component {
@@ -35,11 +35,11 @@ class SchemaDetails extends Component {
             <div key={this.props.location.key} className="d-flex pt-5 justify-content-center w-100 vw-schema-detail">
                  <Card>
                     <CardBlock>
-                    <CardTitle>{this.state.schemaname}</CardTitle>
-                    <CardSubtitle>Authorization Id: {this.state.authorizationid}</CardSubtitle>
-                    <CardSubtitle className="mt-2">Schema Id: {this.state.schemaid}</CardSubtitle>
-                    </CardBlock>
-                    <CardBlock>
+                        <CardTitle>{this.state.schemaname}</CardTitle>
+                        <ListGroup>
+                            <ListGroupItem>Schema Id: {this.state.authorizationid}</ListGroupItem>
+                            <ListGroupItem>Table Id: {this.state.schemaid}</ListGroupItem>
+                        </ListGroup>
                     </CardBlock>
                 </Card>
             </div>
