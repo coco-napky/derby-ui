@@ -60,7 +60,7 @@ class TableView extends Component {
 
     render() {
         return (
-            <div className="w-100 pt-5 d-flex justify-content-center vw-table">
+            <div className="w-100 d-flex justify-content-center vw-table">
             <Card className="main-card">
                 <Nav tabs>
                     <NavItem>

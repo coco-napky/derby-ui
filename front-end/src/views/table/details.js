@@ -36,7 +36,9 @@ class Detail extends Component {
                          )
                     </CardText>
                     <hr/>
-                    <Button className="w-100" color="danger">Eliminar</Button>{' '}
+                    <div className="d-flex w-100 justify-content-center">
+                        <Button className="w-50" color="danger">Eliminar</Button>{' '}
+                    </div>
                 </CardBlock>
             </Card>
         );
