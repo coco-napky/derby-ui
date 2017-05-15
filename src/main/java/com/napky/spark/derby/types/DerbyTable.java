@@ -7,10 +7,12 @@ public class DerbyTable {
     public String identifier;
     public String schemaId;
     public String tableId;
+    public String schemaName;
     public ArrayList<DerbyColumn> columns;
     
-    public DerbyTable(String identifier, String schemaId, String tableId) {
+    public DerbyTable(String identifier, String schemaId, String schemaName, String tableId) {
         this.identifier = identifier;
+        this.schemaName = schemaName;
         this.schemaId = schemaId;
         this.tableId = tableId;
         this.columns = new ArrayList<>();

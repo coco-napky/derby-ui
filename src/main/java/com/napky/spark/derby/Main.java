@@ -111,11 +111,13 @@ public class Main {
             return gson.toJson(DerbyApi.getTables(schema));
         });
         
-        post("/query-table", "application/json", (req, res) -> {
+        get("/query-table", "application/json", (req, res) -> {
             
-            String body = req.body();
-            System.out.println(body);
-            TableQuery query = gson.fromJson(body, TableQuery.class);
+            String schema = req.queryParams("schema");
+            String tableName = req.queryParams("tableName");
+            String where = req.queryParams("where");
+            String compare = req.queryParams("compare");
+            TableQuery query = new TableQuery(tableName, null, schema, where, compare);
             
             return gson.toJson(DerbyApi.queryTable(query));
         });

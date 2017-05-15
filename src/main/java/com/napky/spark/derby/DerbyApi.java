@@ -202,11 +202,11 @@ public class DerbyApi {
                     DerbyTable table = tables.get(identifier);
                     table.addColumn(new DerbyColumn(columnName, columnDataType));
                 } else {
-                    DerbyTable table = new DerbyTable(identifier, schemaId, tableId);
+                    DerbyTable table = new DerbyTable(identifier, schemaId, schemaName, tableId);
                     tables.put(identifier, table);
                 }
                 
-                System.out.println(columnName);
+                
             }
             closeStatement(index);
         } catch (Exception e) {
@@ -233,6 +233,9 @@ public class DerbyApi {
                 + " from " + query.schema + "." + 
                 query.tableName;
         
+        if(query.where != null)
+            sql += " where " + query.where + " = " + query.compare;
+        
         ResultSet resultSet;
         JSONArray json;
         ArrayList<HashMap<String, String>> data = new ArrayList<>();
@@ -241,7 +244,6 @@ public class DerbyApi {
         try {
             resultSet = executeQuery(sql, index);
             json = ResultSetSerializer.convertResultSetIntoJSON(resultSet);
-            System.out.println(json.toString());
             closeStatement(index);
         } catch (Exception e) {
             Logger.getLogger(DerbyApi.class.getName()).log(Level.SEVERE, null, e);

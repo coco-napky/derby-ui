@@ -9,6 +9,16 @@ import { browserHistory } from 'react-router';
 
 import './style.scss';
 
+const getSchemaId = (schemaName, data) => {
+    let props = Object.keys(data);
+    for(let prop of props)
+        if(data[prop].schemaName == schemaName)
+            return data[prop].schemaId;
+        else 
+            console.log("data[prop].schemaName == schemaName ", data[prop], schemaName);
+    return null;
+}
+
 const getSchemas = data => {
     let props = Object.keys(data);
     let set = new Set();
@@ -22,9 +32,11 @@ const getSchemas = data => {
         for(let prop of props)
             if(data[prop].schemaName == schemaName)
                 schema.push(data[prop])
+
         schemas.push({
             tables: schema,
-            schemaName
+            schemaName,
+            schemaId: getSchemaId(schemaName, data)
         });
     }
     
@@ -54,14 +66,33 @@ class Sidebar extends Component {
         
         this.state = { collapse: false, schemas: [] };
 
-        QueryService.getTables()
+         QueryService.getTables()
         .then(response => {
             if(response.data.status)
-                this.loadData(response.data.data);
+                this.loadTables(response.data.data);
+            return QueryService.getStatements();
         })
+        .then(response => {
+            this.loadStatements(response.data.data)
+        })
+        
     }
 
-    loadData(data) {
+    loadStatements(data) {
+        let statements = data.myArrayList.map(s => s.map);
+        for(let schema of this.state.schemas) {
+            schema.statements = [];
+            for(let statement of statements)
+                if(schema.schemaId == statement.schemaid) 
+                    schema.statements.push(statement);
+                else
+                    console.log("schema.schemaId ", schema.schemaId, statement.schemaid);
+        }
+        console.log(this.state.schemas);
+
+    }
+
+    loadTables(data) {
         let schemas = getSchemas(data);
         this.setState({...this.state, schemas})
     }
