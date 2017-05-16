@@ -1,6 +1,9 @@
 .vw-schema-detail {
+    overflow: auto;
     .card {
         width: 25rem;
-        height: 13rem;
+    }
+    #ddl {
+        height: 10rem;
     }
 }
