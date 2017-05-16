@@ -3,6 +3,7 @@ import Sidebar from './views/sidebar';
 import Login from './views/login';
 import SchemaDetails from './views/schema';
 import TableView from './views/table';
+import StatementView from './views/statement';
 import Users from './views/users';
 import { BrowserRouter, Route } from 'react-router-dom'
 import SessionService from './services/session';
@@ -28,6 +29,7 @@ class Routes extends Component {
             <Route path="/schema/:schemaName" component={SchemaDetails} />
             <Route path="/table/" component={TableView} />
             <Route path="/users/" component={Users} />
+            <Route path="/statement/" component={StatementView} />
           </div>
         </BrowserRouter>
       );

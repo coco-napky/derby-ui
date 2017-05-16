@@ -68,7 +68,7 @@ public class Main {
             return gson.toJson(DerbyApi.logout(name, username, password));
         });
         
-        get("/create-user", "application/json", (req, res) -> {
+        get("/7", "application/json", (req, res) -> {
             
             String username = req.queryParams("user");
             String password = req.queryParams("password");

@@ -8,7 +8,7 @@ const mapTables = schema => schema.tables.map((table, index) => (
 
 const mapStatements = schema => schema.statements ? schema.statements.map((statement, index) => (
     <Link key={index} className="d-block" 
-        to={`/statement?schema=${statement.schemaid}&name=${statement.stmtname}`}>
+        to={`/statement?schema=${schema.schemaName}&id=${statement.stmtid}`}>
         {`${statement.stmtname}`}
     </Link>
 )) : '';
