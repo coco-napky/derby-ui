@@ -7,35 +7,18 @@ import mapSchemas from './mapSchema';
 import {Link} from 'react-router-dom';
 import './style.scss';
 
-const getSchemaId = (schemaName, data) => {
+const getSchemas = (data, state) => {
     let props = Object.keys(data);
-    for(let prop of props)
-        if(data[prop].schemaName === schemaName)
-            return data[prop].schemaId;
-    return null;
-}
-
-const getSchemas = data => {
-    let props = Object.keys(data);
-    let set = new Set();
-    let schemas = [];
+    let {schemas} = state;
     
-    for(let prop of props)
-        set.add(data[prop].schemaName)
-    
-    for(let schemaName of set) {
-        let schema = [];
+    for(let schema of schemas) {
+        schema.tables = [];
+        schema.schemaName = schema.schemaname;
+        schema.schemaId = schema.schemaid;
         for(let prop of props)
-            if(data[prop].schemaName === schemaName)
-                schema.push(data[prop])
-
-        schemas.push({
-            tables: schema,
-            schemaName,
-            schemaId: getSchemaId(schemaName, data)
-        });
+            if(data[prop].schemaName === schema.schemaName)
+                schema.tables.push(data[prop])
     }
-    
     return schemas;
 } 
 
@@ -50,8 +33,14 @@ class Sidebar extends Component {
         this.state = { collapse: false, schemas: [], 
             users: [], constraints: [], triggers: []
         };
+        QueryService.getSchemas()
+        .then(response => {
+            let schemas = response.data.data
+            .myArrayList.map(s => s.map);
 
-         QueryService.getTables()
+            this.setState({...this.state, schemas})
+            return QueryService.getTables();
+        })
         .then(response => {
             if(response.data.status)
                 this.loadTables(response.data.data);
@@ -75,7 +64,6 @@ class Sidebar extends Component {
         })
         .then(response => {
             this.loadToSchema(response.data.data, 'triggers');      
-            console.log(this.state)   
         })
         
     }
@@ -95,7 +83,7 @@ class Sidebar extends Component {
     }
 
     loadTables(data) {
-        let schemas = getSchemas(data);
+        let schemas = getSchemas(data, this.state);
         this.setState({...this.state, schemas})
     }
 
@@ -120,7 +108,7 @@ class Sidebar extends Component {
                 <h5 className="">Derby UI</h5>
                 <h5 className="mb-2 p-0">{this.username}</h5>
                 <Nav vertical className="flex-column justify-content-center">
-                    {mapSchemas(this, this.state.schemas)}
+                    {this.state.schemas.length > 0 ? mapSchemas(this, this.state.schemas) : ''}
                     <NavItem>
                         <Link to="/users" >Users</Link>
                     </NavItem>

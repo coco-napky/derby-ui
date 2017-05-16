@@ -95,6 +95,7 @@ public class DerbyApi {
     private static void execute(String sql) throws SQLException, Exception {
         if(conn == null)
             throw new Exception("Execution failed, no connection stablished");
+        System.out.println(sql);
         PreparedStatement statement = conn.prepareCall(sql);
         statement.execute();
         statement.close();
@@ -268,6 +269,16 @@ public class DerbyApi {
                 delimitted += ",";
         }
         return delimitted;
+    }
+
+    static Object executeSql(String sql) {
+        try {
+            execute(sql);
+           return new Result(true, "Sql Ran Succesfully");
+        } catch (Exception ex) {
+            Logger.getLogger(DerbyApi.class.getName()).log(Level.SEVERE, null, ex);
+            return new Result(false, ex.getMessage());
+        }    
     }
 
 }

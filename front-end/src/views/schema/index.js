@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import QueryService from '../../services/query';
 import { Card, CardBlock, CardTitle, ListGroup, ListGroupItem  } from 'reactstrap';
+import CreateForm from './create';
 import "./style.scss";
 
 class SchemaDetails extends Component {
@@ -32,14 +33,19 @@ class SchemaDetails extends Component {
 
     render() {
         return (
-            <div key={this.props.location.key} className="d-flex pt-5 justify-content-center w-100 vw-schema-detail">
-                 <Card>
+            <div key={this.props.location.key} className="d-flex justify-content-center w-100 vw-schema-detail">
+                 <Card className="w-100 h-100">
                     <CardBlock>
                         <CardTitle>{this.state.schemaname}</CardTitle>
                         <ListGroup>
                             <ListGroupItem>Schema Id: {this.state.authorizationid}</ListGroupItem>
                             <ListGroupItem>Table Id: {this.state.schemaid}</ListGroupItem>
                         </ListGroup>
+                    </CardBlock>
+                    <CardBlock>
+                        <CardTitle>Create Schema</CardTitle>
+                        <CreateForm>
+                        </CreateForm>
                     </CardBlock>
                 </Card>
             </div>

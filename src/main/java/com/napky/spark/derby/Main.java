@@ -124,7 +124,18 @@ public class Main {
             return gson.toJson(DerbyApi.queryTable(query));
         });
         
+        get("/execute", "application/json", (req, res) -> {
+            
+            String sql = req.queryParams("sql");
+            
+            if(sql == null)
+               return "Sql cant be null";
+            
+            return gson.toJson(DerbyApi.executeSql(sql));
+        });
+        
         get("/get-users", "application/json", (req, res) -> gson.toJson(DerbyApi.getUsers()));
+        
         
     }
 }

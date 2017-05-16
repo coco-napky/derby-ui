@@ -25,4 +25,7 @@ service.getIndexes = () => service.queryTable('sys', 'SYSCONGLOMERATES', 'isinde
 service.getUsers = () => http.get(`${CONSTANTS.API_URL}/get-users`);
 service.getConstraints = () => service.queryTable('sys', 'sysconstraints');
 service.getTriggers = () => service.queryTable('sys', 'systriggers');
+service.getSchemas = () => service.queryTable('sys', 'sysschemas');
+service.execute = sql => http.get(`${CONSTANTS.API_URL}/execute?sql=${sql}`);
+service.createSchema = name => service.execute(`CREATE SCHEMA ${name}`);
 export default service;
