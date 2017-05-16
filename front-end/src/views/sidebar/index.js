@@ -47,7 +47,9 @@ class Sidebar extends Component {
         this.toggle = this.toggle.bind(this);
         this.logout = this.logout.bind(this);
         this.username = SessionService.getSession().user;
-        this.state = { collapse: false, schemas: [], users: []};
+        this.state = { collapse: false, schemas: [], 
+            users: [], constraints: [], triggers: []
+        };
 
          QueryService.getTables()
         .then(response => {
@@ -65,6 +67,15 @@ class Sidebar extends Component {
         })
         .then(response => {
             this.loadUsers(response.data.data);
+            return QueryService.getConstraints();
+        })
+        .then(response => {
+            this.loadToSchema(response.data.data, 'constraints');         
+            return QueryService.getTriggers();
+        })
+        .then(response => {
+            this.loadToSchema(response.data.data, 'triggers');      
+            console.log(this.state)   
         })
         
     }

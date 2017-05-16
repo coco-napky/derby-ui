@@ -23,5 +23,6 @@ service.getTriggers = () => service.queryTable('sys', 'systriggers');
 service.getStatements = () => service.queryTable('sys', 'sysstatements'); 
 service.getIndexes = () => service.queryTable('sys', 'SYSCONGLOMERATES', 'isindex', true); 
 service.getUsers = () => http.get(`${CONSTANTS.API_URL}/get-users`);
-
+service.getConstraints = () => service.queryTable('sys', 'sysconstraints');
+service.getTriggers = () => service.queryTable('sys', 'systriggers');
 export default service;

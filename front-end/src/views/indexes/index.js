@@ -2,13 +2,13 @@ import React, {Component} from 'react';
 import QueryService from '../../services/query';
 import { TabContent, TabPane, Nav, NavItem, NavLink, Card} from 'reactstrap';
 import classnames from 'classnames';
-import StatementDetails from './details';
+import IndexDetails from './details';
 
-class StatementView extends Component {
+class IndexesView extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {statement: {}, activeTab: '1',}
+        this.state = {index: {}, activeTab: '1',}
         this.loadData();
         this.toggle = this.toggle.bind(this);
     }
@@ -21,11 +21,11 @@ class StatementView extends Component {
         const search = this.props.location.search;
         const params = new URLSearchParams(search);
         const id = params.get('id');
-
+        
         this.name = id;
-        QueryService.queryTable('sys', 'sysstatements', 'stmtid', id)
+        QueryService.queryTable('sys', 'SYSCONGLOMERATES', 'CONGLOMERATEID', id)
          .then(response => {
-            this.setState({...this.state, statement: response.data.data.myArrayList[0].map})
+            this.setState({...this.state, index: response.data.data.myArrayList[0].map})
         })
         .catch(error => console.log(error))
     }
@@ -57,7 +57,7 @@ class StatementView extends Component {
                     </Nav>
                     <TabContent activeTab={this.state.activeTab} className="pt-2">
                         <TabPane tabId="1">
-                            <StatementDetails data={this.state.statement}></StatementDetails>
+                            <IndexDetails data={this.state.index}/>
                         </TabPane>
                         <TabPane tabId="2">
                             <h2>Create</h2>
@@ -69,4 +69,4 @@ class StatementView extends Component {
     }
 }
 
-export default StatementView;
+export default IndexesView;

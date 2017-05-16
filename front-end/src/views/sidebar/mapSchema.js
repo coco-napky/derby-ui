@@ -15,8 +15,25 @@ const mapStatements = schema => schema.statements ? schema.statements.map((state
 
 const mapIndexes = schema => schema.indexes ? schema.indexes.map((index, i) => (
     <Link key={i} className="d-block" 
-        to={`/index?schema=${index.schemaid}&name=${index.conglomeratename}`}>
+        to={`/index?schema=${schema.schemaName}&id=${index.conglomerateid}`}>
         {`${index.conglomeratename}`}
+    </Link>
+)) : '';
+
+const mapConstraints = schema => schema.constraints ? schema.constraints
+.filter(c => c.type === 'P' || c.type === 'F')
+.map((constraint, i) => (
+    <Link key={i} className="d-block" 
+        to={`/constraint?schema=${schema.schemaName}&id=${constraint.constraintid}`}>
+        {`${constraint.constraintname}`}
+    </Link>
+)) : '';
+
+const mapTriggers = schema => schema.triggers ? schema.triggers
+.map((trigger, i) => (
+    <Link key={i} className="d-block" 
+        to={`/trigger?schema=${schema.schemaName}&id=${trigger.triggerid}`}>
+        {`${trigger.triggername}`}
     </Link>
 )) : '';
 
@@ -36,6 +53,14 @@ const mapSchemas = (scope, schemas) => schemas.map((schema, index) => (
             <Collapse isOpen={scope.state[`${schema.schemaName}-indexes`]}>
                 {mapIndexes(schema)}
             </Collapse>
+            <NavLink href="#" onClick={() => scope.toggle(`${schema.schemaName}-constraints`)}>Constraints</NavLink>
+            <Collapse isOpen={scope.state[`${schema.schemaName}-constraints`]}>
+                {mapConstraints(schema)}
+            </Collapse>      
+            <NavLink href="#" onClick={() => scope.toggle(`${schema.schemaName}-triggers`)}>Triggers</NavLink>
+            <Collapse isOpen={scope.state[`${schema.schemaName}-triggers`]}>
+                {mapTriggers(schema)}
+            </Collapse>             
         </Collapse>
     </NavItem>
 ));
